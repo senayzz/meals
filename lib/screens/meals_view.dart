@@ -4,16 +4,16 @@ import 'package:meals/screens/meal_detail.dart';
 import 'package:meals/widgets/meal_item.dart';
 
 class MealsScreen extends StatelessWidget {
-  const MealsScreen({super.key, required this.title, required this.meals});
+  const MealsScreen({super.key, this.title, required this.meals});
 
   //ilgili kategorinin başlığı appbarda gözükmeli
-  final String title;
+  final String? title;
   final List<Meal> meals;
 
   void selectMeal(BuildContext context, Meal meal) {
     Navigator.of(
       context,
-    ).push(MaterialPageRoute(builder: (ctx) => MealDetail(meal: meal)));
+    ).push(MaterialPageRoute(builder: (ctx) => MealDetailScreen(meal: meal)));
   }
 
   @override
@@ -50,6 +50,10 @@ class MealsScreen extends StatelessWidget {
       );
     }
 
-    return Scaffold(appBar: AppBar(title: Text(title)), body: content);
+    if (title == null) {
+      return content;
+    }
+
+    return Scaffold(appBar: AppBar(title: Text(title!)), body: content);
   }
 }

@@ -8,16 +8,21 @@ import 'package:meals/widgets/category_grid_item.dart';
 
 //Bu bir screen olduğu için screen olarak adlandırıyoruz.
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key, required this.onToggleFavorite});
+  const CategoriesScreen({
+    super.key,
+    required this.onToggleFavorite,
+    required this.avaliableMeals,
+  });
 
   final void Function(Meal meal) onToggleFavorite;
+  final List<Meal> avaliableMeals;
   //Seçilen kategoriyi meals sayfasında göstermek için yazacağımız bir fonksiyon
   //ilk defa stateless widgete fonksiyon ekledik
   //Statefullda context globally idi ancak statelessda değil tanımlalamamız lazım fonksiyona girdi olarak vermemiz lazım.
   void _selectCategory(BuildContext context, Category category) {
     //Seçilen kategoriye (category.id) ait olan tüm yemekleri filteredMeals listesine ekle.
     final filteredMeals =
-        dummyMeals
+        avaliableMeals
             .where((meal) => meal.categories.contains(category.id))
             .toList();
     //  Navigator.push(context, route); ikiside aynı eyi yapıyor.

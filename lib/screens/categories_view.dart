@@ -2,13 +2,15 @@
 import 'package:flutter/material.dart';
 import 'package:meals/data/dummy_data.dart';
 import 'package:meals/models/category.dart';
+import 'package:meals/models/meal.dart';
 import 'package:meals/screens/meals_view.dart';
 import 'package:meals/widgets/category_grid_item.dart';
 
 //Bu bir screen olduğu için screen olarak adlandırıyoruz.
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key});
+  const CategoriesScreen({super.key, required this.onToggleFavorite});
 
+  final void Function(Meal meal) onToggleFavorite;
   //Seçilen kategoriyi meals sayfasında göstermek için yazacağımız bir fonksiyon
   //ilk defa stateless widgete fonksiyon ekledik
   //Statefullda context globally idi ancak statelessda değil tanımlalamamız lazım fonksiyona girdi olarak vermemiz lazım.
@@ -22,7 +24,11 @@ class CategoriesScreen extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder:
-            (ctx) => MealsScreen(title: category.title, meals: filteredMeals),
+            (ctx) => MealsScreen(
+              title: category.title,
+              meals: filteredMeals,
+              onToggleFavorite: onToggleFavorite,
+            ),
       ),
     );
   }

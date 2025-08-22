@@ -40,14 +40,17 @@ class MealItem extends StatelessWidget {
         //Arka plan resmi, üzerine yazı, onun da üzerine buton eklemek gibi senaryolarda idealdir.
         child: Stack(
           children: [
-            FadeInImage(
-              placeholder: MemoryImage(kTransparentImage),
-              image: NetworkImage(meal.imageUrl),
-              //Görseli 200 px yüksekliğe ve ekran genişliğine göre tam genişliğe sabitler.
-              //fit: BoxFit.cover sayesinde görsel tam alanı kaplar, ama taşma durumunda kenarları kırpılabilir.
-              fit: BoxFit.cover,
-              height: 200,
-              width: double.infinity,
+            Hero(
+              tag: meal.id,
+              child: FadeInImage(
+                placeholder: MemoryImage(kTransparentImage),
+                image: NetworkImage(meal.imageUrl),
+                //Görseli 200 px yüksekliğe ve ekran genişliğine göre tam genişliğe sabitler.
+                //fit: BoxFit.cover sayesinde görsel tam alanı kaplar, ama taşma durumunda kenarları kırpılabilir.
+                fit: BoxFit.cover,
+                height: 200,
+                width: double.infinity,
+              ),
             ),
             Positioned(
               bottom: 0,

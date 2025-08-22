@@ -1,28 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:meals/models/meal.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:meals/provider/favorites_provider.dart';
 
-class MealDetailScreen extends StatelessWidget {
-  const MealDetailScreen({
-    super.key,
-    required this.meal,
-    required this.onToggleFavorite,
-  });
+class MealDetailScreen extends ConsumerWidget {
+  const MealDetailScreen({super.key, required this.meal});
 
   final Meal meal;
-  final void Function(Meal meal) onToggleFavorite;
+  // final void Function(Meal meal) onToggleFavorite;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: Text(meal.title),
         //Favori eklemek için buton.
         actions: [
+          // Bu butona basıldığında, provider'ın notifier'ı kullanılarak yemeğin favori durumu değiştirilir.
+          // Eğer yemek favorilerde değilse eklenir, favorilerdeyse çıkarılır.
           IconButton(
             onPressed: () {
-              onToggleFavorite(meal);
+              /*
+                Notifier burada yemeğin favori durumunu değiştirmek için de kullanılır.
+                Dönen değer (`wasAdded`), yemeğin favorilere eklenip eklenmediğini belirtir:
+                - true: favorilere eklendi
+                - false: favorilerden çıkarıldı
+                Sonrasında kullanıcıya geri bildirim vermek için bir SnackBar gösterilir.
+              */
+              final wasAdded = ref
+                  .read(favoriteMealsProvider.notifier)
+                  .toggleMealFavoriteStatus(meal);
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    wasAdded ? 'Meal added as a favorite' : 'Meal removed.',
+                  ),
+                ),
+              );
             },
-            icon: Icon(Icons.star),
+            icon: Icon(
+              ref.watch(favoriteMealsProvider).contains(meal)
+                  ? Icons.star
+                  : Icons.star_border,
+            ),
           ),
         ],
       ),

@@ -8,13 +8,9 @@ import 'package:meals/widgets/category_grid_item.dart';
 
 //Bu bir screen olduğu için screen olarak adlandırıyoruz.
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({
-    super.key,
-    required this.onToggleFavorite,
-    required this.avaliableMeals,
-  });
+  const CategoriesScreen({super.key, required this.avaliableMeals});
 
-  final void Function(Meal meal) onToggleFavorite;
+  // final void Function(Meal meal) onToggleFavorite;
   final List<Meal> avaliableMeals;
   //Seçilen kategoriyi meals sayfasında göstermek için yazacağımız bir fonksiyon
   //ilk defa stateless widgete fonksiyon ekledik
@@ -29,11 +25,7 @@ class CategoriesScreen extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder:
-            (ctx) => MealsScreen(
-              title: category.title,
-              meals: filteredMeals,
-              onToggleFavorite: onToggleFavorite,
-            ),
+            (ctx) => MealsScreen(title: category.title, meals: filteredMeals),
       ),
     );
   }

@@ -1,21 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:meals/data/dummy_data.dart';
-import 'package:meals/models/meal.dart';
 import 'package:meals/provider/favorites_provider.dart';
 import 'package:meals/screens/categories_view.dart';
 import 'package:meals/screens/filters_view.dart';
 import 'package:meals/screens/meals_view.dart';
 import 'package:meals/widgets/main_drawer.dart';
-import 'package:meals/provider/meals_provider.dart';
-
-const kInitialFilters = {
-  Filter.glutenFree: false,
-  Filter.lactoseFree: false,
-  Filter.vegetarian: false,
-  Filter.vegan: false,
-};
+import 'package:meals/provider/filters_provider.dart';
 
 class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key});
@@ -28,14 +19,13 @@ class TabsScreen extends ConsumerStatefulWidget {
 
 class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _selectedPageIndex = 0;
-  Map<Filter, bool> _selectedFilters = kInitialFilters;
 
-  void _showInfoMessage(String message) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message, textAlign: TextAlign.center)),
-    );
-  }
+  // void _showInfoMessage(String message) {
+  //   ScaffoldMessenger.of(context).clearSnackBars();
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(content: Text(message, textAlign: TextAlign.center)),
+  //   );
+  // }
 
   void _selectPage(int index) {
     setState(() {
@@ -47,40 +37,15 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     //filter kısmından geri gelince drawer açık kalıyordu onu popladık.
     Navigator.of(context).pop();
     if (identifier == 'filters') {
-      //await kullanıcı filters screenden dönene kadar bekle.
-      //Kullanıcı başka bir ekrana gider (filters ekranı),
-      // orada bir işlem yapar ve geri döndüğünde o işlemin sonucunu bu satırdan alırsın.
-      //Kullanıcıyı FiltersScreen’e yönlendir, o ekrandan bir Map<Filter, bool> dönerse onu result içinde sakla.
-      final result = await Navigator.of(context).push<Map<Filter, bool>>(
-        MaterialPageRoute(
-          builder: (ctx) => FiltersScreen(currentFilters: _selectedFilters),
-        ),
-      );
-      setState(() {
-        _selectedFilters = result ?? kInitialFilters;
-      });
+      await Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (ctx) => const FiltersScreen()));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final meals = ref.watch(mealsProvider);
-    final avaliablemeals =
-        meals.where((meal) {
-          if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
-            return false;
-          }
-          if (_selectedFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
-            return false;
-          }
-          if (_selectedFilters[Filter.vegetarian]! && !meal.isVegetarian) {
-            return false;
-          }
-          if (_selectedFilters[Filter.vegan]! && !meal.isVegan) {
-            return false;
-          }
-          return true;
-        }).toList();
+    final avaliablemeals = ref.watch(filteredMealsProvider);
 
     Widget activePage = CategoriesScreen(avaliableMeals: avaliablemeals);
     var activePageTitle = 'Categories';
